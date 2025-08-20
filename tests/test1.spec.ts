@@ -6,10 +6,10 @@ test('Register Page ', async ({ page }) => {
     await page.getByText('Bài học 1: Register Page').click();
     await page.waitForTimeout(500);
     
-    await page.locator('//input[@name="username"]').type('Duy', { delay: 100 });
+    await page.fill('//input[@name="username"]','duy');
     await page.waitForTimeout(500);
 
-    await page.locator('//input[@type="email"]').type('duy@gmail.com', { delay: 100 });
+    await page.fill('//input[@type="email"]','duy@gmail.com' );
     await page.waitForTimeout(500);
 
     await page.check('//*[@id="male"]');
@@ -30,7 +30,7 @@ test('Register Page ', async ({ page }) => {
     await page.setInputFiles('#profile', 'tests/files/avatar-27.jpeg');
     await page.waitForTimeout(500);
 
-    await page.locator('//*[@id="bio"]').type('Xin chào, mình là Duy.', { delay: 100 });
+    await page.fill('//*[@id="bio"]','Xin chào, mình là Duy.');
     await page.waitForTimeout(500);
     
     await page.fill('//*[@id="rating"]', '9');
