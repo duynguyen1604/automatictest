@@ -1,5 +1,4 @@
 import { test, expect } from '@playwright/test';
-
 test('Register Page ', async ({ page }) => {
     await page.goto('https://material.playwrightvn.com/');
     await page.waitForTimeout(500);
@@ -68,3 +67,4 @@ test('Register Page ', async ({ page }) => {
     await page.waitForTimeout(1000);
     await page.locator('button[type="submit"]').click();
 });
+
