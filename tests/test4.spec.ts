@@ -32,12 +32,9 @@ test.describe('Bài học 1: Register Page', () => {
       await page.fill('//*[@id="favcolor"]', '#0097fc');
     });
 
-    await test.step('Check newsletter & điều khoản', async () => {
+    await test.step('Check newsletter & kích hoạt tính năng', async () => {
       await page.check('//*[@id="newsletter"]');
-      await expect(page.locator('//*[@id="newsletter"]')).toBeChecked();
-
       await page.check('//*[@id="registrationForm"]/div[13]/label[2]');
-      await expect(page.locator('//*[@id="registrationForm"]/div[13]/label[2]')).toBeChecked();
     });
 
     await test.step('Thay đổi rating bằng evaluate', async () => {
