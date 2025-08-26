@@ -1,70 +1,63 @@
 import { test, expect } from '@playwright/test';
-test('Register Page ', async ({ page }) => {
-    await page.goto('https://material.playwrightvn.com/');
-    await page.waitForTimeout(500);
-    await page.getByText('Bài học 1: Register Page').click();
-    await page.waitForTimeout(500);
-    
-    await page.fill('//input[@name="username"]','duy');
-    await page.waitForTimeout(500);
 
-    await page.fill('//input[@type="email"]','duy@gmail.com' );
-    await page.waitForTimeout(500);
+test.describe('Bài học 1: Register Page', () => {
+  test.beforeEach(async ({ page }) => {
+    await test.step('Đi tới trang Register Page', async () => {
+      await page.goto('https://material.playwrightvn.com/');
+      await page.getByText('Bài học 1: Register Page').click();
+    });
+  });
 
-    await page.check('//*[@id="male"]');
-    await page.waitForTimeout(500);
+  test('Điền form đăng ký đầy đủ và submit', async ({ page }) => {
+    await test.step('Điền thông tin cơ bản', async () => {
+      await page.fill('//input[@name="username"]','duy');
+      await page.fill('//input[@type="email"]','duy@gmail.com');
+      await page.check('//*[@id="male"]');
+      await page.check('//input[@id="traveling"]');
+    });
 
-    await page.check('//input[@id="traveling"]');
-    await page.waitForTimeout(500);
+    await test.step('Chọn sở thích và quốc gia', async () => {
+      await page.selectOption('//select[@id="interests"]', 'Science');
+      await page.selectOption('//select[@id="country"]','United States');
+    });
 
-    await page.selectOption('//select[@id="interests"]', 'Science');
-    await page.waitForTimeout(500);
+    await test.step('Ngày sinh và upload avatar', async () => {
+      await page.fill('//*[@id="dob"]', '2004-04-04');
+      await page.setInputFiles('#profile', 'tests/files/avatar-27.jpeg');
+    });
 
-    await page.selectOption('//select[@id="country"]','United States');
-    await page.waitForTimeout(500);
+    await test.step('Điền bio, rating, màu yêu thích', async () => {
+      await page.fill('//*[@id="bio"]','Xin chào, mình là Duy.');
+      await page.fill('//*[@id="rating"]', '9');
+      await page.fill('//*[@id="favcolor"]', '#0097fc');
+    });
 
-    await page.fill('//*[@id="dob"]', '2004-04-04');
-    await page.waitForTimeout(500);
+    await test.step('Check newsletter & kích hoạt tính năng', async () => {
+      await page.check('//*[@id="newsletter"]');
+      await page.check('//*[@id="registrationForm"]/div[13]/label[2]');
+    });
 
-    await page.setInputFiles('#profile', 'tests/files/avatar-27.jpeg');
-    await page.waitForTimeout(500);
+    await test.step('Thay đổi rating bằng evaluate', async () => {
+      const ratingElement = page.locator('//*[@id="starRating"]');
+      const ratingValueElement = page.locator('//*[@id="starRatingValue"]');
+      const changeRating = async (newRating: number) => {
+    const box = await ratingElement.boundingBox();
+    if (!box) throw new Error("Không tìm thấy boundingBox");
+    const clickX = box.x + (box.width * newRating / 5);
+    const clickY = box.y + box.height / 2;
 
-    await page.fill('//*[@id="bio"]','Xin chào, mình là Duy.');
-    await page.waitForTimeout(500);
-    
-    await page.fill('//*[@id="rating"]', '9');
-    await page.waitForTimeout(500);
+    await page.mouse.click(clickX, clickY);
 
-    await page.fill('//*[@id="favcolor"]', '#0097fc');
-    await page.waitForTimeout(500);
-    
-    await page.check('//*[@id="newsletter"]');
-    await page.waitForTimeout(500);
-    
-    await expect(page.locator('//*[@id="newsletter"]')).toBeChecked();
-    await page.waitForTimeout(500);
-
-    await page.check('//*[@id="registrationForm"]/div[13]/label[2]');
-    await page.waitForTimeout(500);
-
-    await expect(page.locator('//*[@id="registrationForm"]/div[13]/label[2]')).toBeChecked();
-    await page.waitForTimeout(500);
-
-    const ratingElement = page.locator('//*[@id="starRating"]');
-    const ratingValueElement = page.locator('//*[@id="starRatingValue"]');
-    const changeRating = async (newRating: number) => {
-    await ratingElement.evaluate((a, rating) => {
-      a.setAttribute('data-rating', rating.toString());
-      a.style.setProperty('--rating-width', `${(rating / 5) * 100}%`);
-    }, newRating);
-    // neu thay doi 
     await ratingValueElement.evaluate((a, rating) => {
       a.textContent = rating.toString();
     }, newRating);
-    };
-    await changeRating(3.9);
+  };
 
-    await page.waitForTimeout(1000);
-    await page.locator('button[type="submit"]').click();
+  await changeRating(3.9);
+    });
+
+    await test.step('Submit form', async () => {
+      await page.locator('button[type="submit"]').click();
+    });
+  });
 });
-
