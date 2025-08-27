@@ -11,21 +11,17 @@ test.describe('Bài học 2: Product Page', () => {
   test('Thêm sản phẩm vào giỏ', async ({ page }) => {
     await test.step('Click nút Add sản phẩm 1 (2 lần)', async () => {
       const button1 = page.locator('//button[@data-product-id="1"]');
-      for (let i = 0; i < 2; i++) {
-        await button1.click();
-      }
+      await button1.click({clickCount: 2});
     });
 
     await test.step('Click nút Add sản phẩm 2 (3 lần)', async () => {
       const button2 = page.locator('//button[@data-product-id="2"]');
-      for (let i = 0; i < 3; i++) {
-        await button2.click();
-      }
+      await button2.click({clickCount: 3});
     });
 
     await test.step('Click nút Add sản phẩm 3 (1 lần)', async () => {
       const button3 = page.locator('//button[@data-product-id="3"]');
-      await button3.click();
+      await button3.click({clickCount: 1});
     });
   });
 });
