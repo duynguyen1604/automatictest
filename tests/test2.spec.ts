@@ -23,5 +23,11 @@ test.describe('Bài học 2: Product Page', () => {
       const button3 = page.locator('//button[@data-product-id="3"]');
       await button3.click({clickCount: 1});
     });
+
+
+    await expect(page.locator('//*[@id="cart-items"]/tr[1]/td[3]')).toHaveText('2'); 
+    await expect(page.locator('//*[@id="cart-items"]/tr[2]/td[3]')).toHaveText('3');
+    await expect(page.locator('//*[@id="cart-items"]/tr[3]/td[3]')).toHaveText('1');
   });
+
 });
