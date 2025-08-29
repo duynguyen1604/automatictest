@@ -34,7 +34,7 @@ test.describe('Bài học 1: Register Page', () => {
       await page.setInputFiles('#profile', 'tests/files/avatar-27.jpeg');
 
       await expect(page.locator('//*[@id="dob"]')).toHaveValue('2004-04-04');
-      
+      await expect(page.locator('//*[@id="profile"]')).toHaveValue(/avatar-27\.jpeg$/);
     });
 
     await test.step('Điền bio, rating, màu yêu thích', async () => {
@@ -52,7 +52,7 @@ test.describe('Bài học 1: Register Page', () => {
       await page.check('//*[@id="registrationForm"]/div[13]/label[2]');
 
       await expect(page.locator('//*[@id="newsletter"]')).toBeChecked;
-      await expect(page.locator('//*[@id="registrationForm"]/div[13]/label[2]')).toBeChecked;
+      await expect(page.locator('//*[@id="registrationForm"]//input[@id="toggleOption"]')).toBeChecked;
     });
 
     await test.step('Thay đổi rating bằng evaluate', async () => {

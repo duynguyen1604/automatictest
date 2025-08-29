@@ -29,7 +29,12 @@ test.describe('Bài học 3: Todo page', () => {
       }
     });
     await expect(page.locator('//li')).toHaveCount(50);
-    await expect(page.locator('//li[.//span[text()="2"]]')).toBeVisible();
+    for (let i = 2; i <= 100; i += 2) {
+    await expect(page.locator(`//li[.//span[text()="${i}"]]`)).toBeVisible();
+    }
+    for (let i = 1; i <= 100; i += 2) {
+    await expect(page.locator(`//li[.//span[text()="${i}"]]`)).toHaveCount(0);
+    }
   });
 
 });
