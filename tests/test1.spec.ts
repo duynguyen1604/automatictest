@@ -52,7 +52,7 @@ test.describe('Bài học 1: Register Page', () => {
       await page.check('//*[@id="registrationForm"]/div[13]/label[2]');
 
       await expect(page.locator('//*[@id="newsletter"]')).toBeChecked;
-      await expect(page.locator('//*[@id="registrationForm"]//input[@id="toggleOption"]')).toBeChecked;
+      await expect(page.locator('//*input[@id="toggleOption"]')).toBeChecked;
     });
 
     await test.step('Thay đổi rating bằng evaluate', async () => {

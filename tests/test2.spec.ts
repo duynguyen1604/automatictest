@@ -24,10 +24,10 @@ test.describe('Bài học 2: Product Page', () => {
       await button3.click({clickCount: 1});
     });
 
-    await expect(page.locator('//*[@id="cart-items"]//tr[td[1][text()="Product 1"]]/td[3]')).toHaveText('2');
-    await expect(page.locator('//*[@id="cart-items"]//tr[td[1][text()="Product 2"]]/td[3]')).toHaveText('3');
-    await expect(page.locator('//*[@id="cart-items"]//tr[td[1][text()="Product 3"]]/td[3]')).toHaveText('1');
-    //await expect(page.locator('//*[@id="cart-items"]//tr[td[1][text()="Product 1"]]/td[3]')).toHaveText('4');
+    await expect(page.locator('//td[text()="Product 1"]/following-sibling::td[2]')).toHaveText('2');
+    await expect(page.locator('//td[text()="Product 2"]/following-sibling::td[2]')).toHaveText('3');
+    await expect(page.locator('//td[text()="Product 3"]/following-sibling::td[2]')).toHaveText('1');
+    
   });
 
 });
