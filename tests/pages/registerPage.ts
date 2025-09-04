@@ -1,5 +1,5 @@
 // registerPage.ts
-import { expect, Locator, Page } from '@playwright/test';
+import { Locator, Page } from '@playwright/test';
 import { BasePage } from './basePage';
 
 export class RegisterPage extends BasePage {
@@ -20,7 +20,7 @@ export class RegisterPage extends BasePage {
   readonly starRatingValue: Locator;
   readonly submitButton: Locator;
 
-  constructor(page:Page) {
+  constructor(page: Page) {
     super(page);
     this.username = page.locator('//input[@name="username"]');
     this.email = page.locator('//input[@type="email"]');
@@ -41,7 +41,8 @@ export class RegisterPage extends BasePage {
   }
 
   async goto() {
-    await this.page.goto('https://material.playwrightvn.com/');
+    const basePage = new BasePage(this.page);
+    await basePage.goto('https://material.playwrightvn.com/');
     await this.page.getByText('Bài học 1: Register Page').click();
   }
 
@@ -50,52 +51,43 @@ export class RegisterPage extends BasePage {
     await this.email.fill(email);
     await this.male.check();
     await this.traveling.check();
-
-    await expect(this.username).toHaveValue(username);
-    await expect(this.email).toHaveValue(email);
-    await expect(this.male).toBeChecked();
-    await expect(this.traveling).toBeChecked();
   }
 
-  async selectOptions() {
-    await this.interests.selectOption('Science');
-    await this.country.selectOption('United States');
-
-    await expect(this.interests).toHaveValue('science');
-    await expect(this.country).toHaveValue('usa');
+  async selectOptions(interest: string, country: string) {
+    await this.interests.selectOption(interest);
+    await this.country.selectOption(country);
   }
 
-  async setDobAndAvatar(dob: string) {
+  async setDobAndAvatar(dob: string, filePath: string) {
     await this.dob.fill(dob);
-    await this.profile.setInputFiles('tests/files/avatar-27.jpeg');
-
-    await expect(this.dob).toHaveValue(dob);
-    await expect(this.profile).toHaveValue(/avatar-27\.jpeg$/);
+    await this.profile.setInputFiles(filePath);
   }
 
-  async fillInfo2(bio: string, rating: string,color:string) {
+  async fillUserProfile(bio: string, rating: string, color: string) {
     await this.bio.fill(bio);
     await this.rating.fill(rating);
     await this.favcolor.fill(color);
-
-    await expect(this.bio).toHaveValue(bio);
-    await expect(this.rating).toHaveValue(rating);
-    await expect(this.favcolor).toHaveValue(color);
   }
 
-  async enableFeatures() {
-    await this.newsletter.check();
-    await this.toggleOption.check();
+  async setFeatures(enableNewsletter: boolean, enableToggle: boolean) {
+    if (enableNewsletter) {
+      await this.newsletter.check();
+    } else {
+      await this.newsletter.uncheck();
+    }
 
-    await expect(this.newsletter).toBeChecked();
-    await expect(this.toggleOption).toBeChecked();
+    if (enableToggle) {
+      await this.toggleOption.check();
+    } else {
+      await this.toggleOption.uncheck();
+    }
   }
 
   async changeRating(newRating: number) {
     const box = await this.starRating.boundingBox();
     if (!box) throw new Error('Không tìm thấy boundingBox');
 
-    const clickX = box.x + (box.width * newRating / 5);
+    const clickX = box.x + (box.width * newRating) / 5;
     const clickY = box.y + box.height / 2;
 
     await this.page.mouse.click(clickX, clickY);
@@ -103,8 +95,6 @@ export class RegisterPage extends BasePage {
     await this.starRatingValue.evaluate((a, rating) => {
       a.textContent = rating.toString();
     }, newRating);
-
-    await expect(this.starRatingValue).toHaveText(newRating.toString());
   }
 
   async submitForm() {

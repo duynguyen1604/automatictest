@@ -11,14 +11,11 @@ export class TodoPage extends BasePage {
     this.newTaskInput = page.locator('#new-task');
     this.addTaskButton = page.locator('#add-task');
     this.tasks = page.locator('//li');
-
-    this.page.on('dialog', async (dialog) => {
-      await dialog.accept();
-    });
   }
 
   async goto() {
-    await this.page.goto('https://material.playwrightvn.com/');
+    const basePage= new BasePage(this.page);
+    await basePage.goto('https://material.playwrightvn.com/');
     await this.page.getByText('Bài học 3: Todo page').click();
   }
 
@@ -44,15 +41,4 @@ export class TodoPage extends BasePage {
     }
   }
 
-  async verifyTasksCount(expected: number) {
-    await expect(this.tasks).toHaveCount(expected);
-  }
-
-  async verifyTaskVisible(name: string) {
-    await expect(this.page.locator(`//li[.//span[text()="${name}"]]`)).toBeVisible();
-  }
-
-  async verifyTaskNotExist(name: string) {
-    await expect(this.page.locator(`//li[.//span[text()="${name}"]]`)).toHaveCount(0);
-  }
 }

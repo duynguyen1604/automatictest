@@ -1,14 +1,36 @@
-import { test, expect } from '@playwright/test';
+import { test } from '@playwright/test';
 import { RegisterPage } from '../pages/registerPage';
-test('Điền form đăng ký đầy đủ và submit', async ({ page }) =>{
-    const registerPage = new RegisterPage(page);
-    await registerPage.goto();
-    await registerPage.fillInfo('duy', 'duynguyenthe195@gmail.com');
-    await registerPage.selectOptions();
-    await registerPage.setDobAndAvatar('2004-04-04');
-    await registerPage.fillInfo2('Xin chào, mình là Duy.','8','#0097fc');
-    await registerPage.enableFeatures;
-    await registerPage.changeRating(3.9);
-    await registerPage.submitForm;
+import { RegisterPageAssertions } from '../assertions/registerPageAssertions';
 
+test.describe('Bài học 1: Register Page', () => {
+  let registerPage: RegisterPage;
+  let assertions: RegisterPageAssertions;
+
+  test.beforeEach(async ({ page }) => {
+    registerPage = new RegisterPage(page);
+    assertions = new RegisterPageAssertions(registerPage);
+    await registerPage.goto();
+  });
+
+  test('Điền form đăng ký', async () => {
+    await registerPage.fillInfo('duy', 'duy@gmail.com');
+    await assertions.expectInfo('duy', 'duy@gmail.com');
+
+    await registerPage.selectOptions('Science', 'United States');
+    await assertions.expectOptions('science', 'usa');
+
+    await registerPage.setDobAndAvatar('2004-04-04', 'tests/files/avatar-27.jpeg');
+    await assertions.expectDobAndAvatar('2004-04-04', /avatar-27\.jpeg$/);
+
+    await registerPage.fillUserProfile('Xin chào, mình là Duy.', '5', '#0097fc');
+    await assertions.expectUserProfile('Xin chào, mình là Duy.', '5', '#0097fc');
+
+    await registerPage.setFeatures(true, false);
+    await assertions.expectFeatures(true, false);
+
+    await registerPage.changeRating(2.9);
+    await assertions.expectRating(2.9);
+
+    await registerPage.submitForm();
+  });
 });
