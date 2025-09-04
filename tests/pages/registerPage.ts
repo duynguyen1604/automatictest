@@ -6,7 +6,10 @@ export class RegisterPage extends BasePage {
   readonly username: Locator;
   readonly email: Locator;
   readonly male: Locator;
-  readonly traveling: Locator;
+  readonly female: Locator;
+  readonly reading: Locator;
+  readonly travel: Locator;
+  readonly cooking: Locator;
   readonly interests: Locator;
   readonly country: Locator;
   readonly dob: Locator;
@@ -25,7 +28,10 @@ export class RegisterPage extends BasePage {
     this.username = page.locator('//input[@name="username"]');
     this.email = page.locator('//input[@type="email"]');
     this.male = page.locator('//*[@id="male"]');
-    this.traveling = page.locator('//input[@id="traveling"]');
+    this.female = page.locator('//*[@id="female"]');
+    this.reading = page.locator('//input[@id="reading"]');
+    this.travel = page.locator('//input[@id="traveling"]');
+    this.cooking = page.locator('//input[@id="cooking"]');
     this.interests = page.locator('//select[@id="interests"]');
     this.country = page.locator('//select[@id="country"]');
     this.dob = page.locator('//*[@id="dob"]');
@@ -46,11 +52,25 @@ export class RegisterPage extends BasePage {
     await this.page.getByText('Bài học 1: Register Page').click();
   }
 
-  async fillInfo(username: string, email: string) {
+  async fillInfo(username: string, email: string, gender: 'male' | 'female', hobbies: string[] = []) {
     await this.username.fill(username);
     await this.email.fill(email);
-    await this.male.check();
-    await this.traveling.check();
+
+    if (gender === 'male') {
+      await this.male.check();
+    } else {
+      await this.female.check();
+    }
+
+    if (hobbies.includes('reading')) {
+      await this.reading.check();
+    }
+    if (hobbies.includes('travel')) {
+      await this.travel.check();
+    }
+    if (hobbies.includes('cooking')) {
+      await this.cooking.check();
+    }
   }
 
   async selectOptions(interest: string, country: string) {

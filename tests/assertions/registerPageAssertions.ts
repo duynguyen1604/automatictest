@@ -4,11 +4,34 @@ import { RegisterPage } from '../pages/registerPage';
 export class RegisterPageAssertions {
   constructor(private registerPage: RegisterPage) {}
 
-  async expectInfo(username: string, email: string) {
+  async expectInfo(username: string, email: string,gender: 'male' | 'female' = 'male', hobbies: string[] = []) {
     await expect(this.registerPage.username).toHaveValue(username);
     await expect(this.registerPage.email).toHaveValue(email);
-    await expect(this.registerPage.male).toBeChecked();
-    await expect(this.registerPage.traveling).toBeChecked();
+    if (gender === 'male') {
+      await expect(this.registerPage.male).toBeChecked();
+      await expect(this.registerPage.female).not.toBeChecked();
+  } else {
+      await expect(this.registerPage.female).toBeChecked();
+      await expect(this.registerPage.male).not.toBeChecked();
+  }
+
+    if (hobbies.includes('reading')) {
+      await expect(this.registerPage.reading).toBeChecked();
+  } else {
+      await expect(this.registerPage.reading).not.toBeChecked();
+  }
+
+    if (hobbies.includes('travel')) {
+      await expect(this.registerPage.travel).toBeChecked();
+  } else {
+      await expect(this.registerPage.travel).not.toBeChecked();
+  }
+
+    if (hobbies.includes('cooking')) {
+      await expect(this.registerPage.cooking).toBeChecked();
+  } else {
+      await expect(this.registerPage.cooking).not.toBeChecked();
+  }
   }
 
   async expectOptions(interest: string, country: string) {

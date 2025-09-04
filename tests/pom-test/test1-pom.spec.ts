@@ -13,8 +13,8 @@ test.describe('Bài học 1: Register Page', () => {
   });
 
   test('Điền form đăng ký', async () => {
-    await registerPage.fillInfo('duy', 'duy@gmail.com');
-    await assertions.expectInfo('duy', 'duy@gmail.com');
+    await registerPage.fillInfo('duy', 'duy@gmail.com', 'male', ['reading', 'cooking']);
+    await assertions.expectInfo('duy', 'duy@gmail.com', 'male', ['reading', 'cooking']);
 
     await registerPage.selectOptions('Science', 'United States');
     await assertions.expectOptions('science', 'usa');
