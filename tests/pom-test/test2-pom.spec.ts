@@ -1,24 +1,27 @@
-import { test } from '@playwright/test';
+import { expect, test } from '@playwright/test';
 import { ProductPage } from '../pages/productPage';
-import { ProductPageAssertions } from '../assertions/productPageAssertions';
 
 test.describe('Bài học 2: Product Page', () => {
   let productPage: ProductPage;
-  let assertions: ProductPageAssertions;
 
   test.beforeEach(async ({ page }) => {
     productPage = new ProductPage(page);
-    assertions = new ProductPageAssertions(page);
     await productPage.goto();
   });
 
   test('Thêm sản phẩm vào giỏ', async () => {
-    await productPage.addProduct(1, 2);
-    await productPage.addProduct(2, 3);
-    await productPage.addProduct(3, 1);
+    const products = [
+      { id: 1, qty: 2 },
+      { id: 2, qty: 3 },
+      { id: 3, qty: 1 },
+    ];
 
-    await assertions.expectQuantity('Product 1', '2');
-    await assertions.expectQuantity('Product 2', '3');
-    await assertions.expectQuantity('Product 3', '1');
+    for (const { id, qty } of products) {
+      await test.step(`Thêm Product ${id} với số lượng ${qty}`, async () => {
+        await productPage.addProduct(id, qty);
+        const locator = productPage.page.locator(`//td[text()="Product ${id}"]/following-sibling::td[2]`);
+        await expect(locator).toHaveText(`${qty}`);
+      });
+    }
   });
 });

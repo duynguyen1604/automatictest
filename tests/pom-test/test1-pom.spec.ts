@@ -1,35 +1,55 @@
-import { test } from '@playwright/test';
+import { expect, test } from '@playwright/test';
 import { RegisterPage } from '../pages/registerPage';
-import { RegisterPageAssertions } from '../assertions/registerPageAssertions';
 
 test.describe('Bài học 1: Register Page', () => {
   let registerPage: RegisterPage;
-  let assertions: RegisterPageAssertions;
 
   test.beforeEach(async ({ page }) => {
     registerPage = new RegisterPage(page);
-    assertions = new RegisterPageAssertions(registerPage);
+    
     await registerPage.goto();
   });
 
+
   test('Điền form đăng ký', async () => {
-    await registerPage.fillInfo('duy', 'duy@gmail.com', 'male', ['reading', 'cooking']);
-    await assertions.expectInfo('duy', 'duy@gmail.com', 'male', ['reading', 'cooking']);
+    await test.step('Điền thông tin cơ bản', async () => {
+      await registerPage.fillInfo('duy', 'duy@gmail.com', 'male', ['reading', 'cooking']);
+      await expect(registerPage.username).toHaveValue('duy');
+      await expect(registerPage.email).toHaveValue('duy@gmail.com');
+      await expect(registerPage.male).toBeChecked();
+      await expect(registerPage.reading).toBeChecked();
+      await expect(registerPage.cooking).toBeChecked();
+    });
+    await test.step('Chọn sở thích và quốc gia', async () => {
+      await registerPage.selectOptions('Science', 'United States');
+      await expect(registerPage.interests).toHaveValue('science');
+      await expect(registerPage.country).toHaveValue('usa');
+    });
+    await test.step('Ngày sinh và upload avatar', async () => {
+      await registerPage.setDobAndAvatar('2004-04-04', 'tests/files/avatar-27.jpeg');
 
-    await registerPage.selectOptions('Science', 'United States');
-    await assertions.expectOptions('science', 'usa');
+      await expect(registerPage.dob).toHaveValue('2004-04-04');
+      await expect(registerPage.profile).toHaveValue(/avatar-27\.jpeg$/);
+    });
+    await test.step('Điền bio, rating, màu yêu thích', async () => {
+      await registerPage.fillUserProfile('Xin chào, mình là Duy.', '5', '#0097fc');
 
-    await registerPage.setDobAndAvatar('2004-04-04', 'tests/files/avatar-27.jpeg');
-    await assertions.expectDobAndAvatar('2004-04-04', /avatar-27\.jpeg$/);
+      await expect(registerPage.bio).toHaveValue('Xin chào, mình là Duy.');
+      await expect(registerPage.rating).toHaveValue('5');
+      await expect(registerPage.favcolor).toHaveValue('#0097fc');
+    });
 
-    await registerPage.fillUserProfile('Xin chào, mình là Duy.', '5', '#0097fc');
-    await assertions.expectUserProfile('Xin chào, mình là Duy.', '5', '#0097fc');
+    await test.step('Check newsletter & kích hoạt tính năng', async () => {
+      await registerPage.setFeatures(true, false);
 
-    await registerPage.setFeatures(true, false);
-    await assertions.expectFeatures(true, false);
-
-    await registerPage.changeRating(2.9);
-    await assertions.expectRating(2.9);
+      await expect(registerPage.newsletter).toBeChecked;
+      await expect(registerPage.toggleOption).not.toBeChecked;
+    });
+  
+    await test.step('Thay đổi rating bằng evaluate', async () => {
+      await registerPage.changeRating(2.9);
+      await expect(registerPage.starRatingValue).toHaveText('2.9');
+  });
 
     await registerPage.submitForm();
   });
