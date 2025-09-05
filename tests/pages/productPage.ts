@@ -11,19 +11,30 @@ export class ProductPage extends BasePage {
   }
 
   async goto() {
-    await this.gotoBase();
-    await this.page.getByText('Bài học 2: Product page').click();
+    await super.goto('Bài học 2: Product page'); // gọi lại hàm từ BasePage
   }
-
-  private async gotoBase() {
-    const basePage = new BasePage(this.page);
-    await basePage.goto('https://material.playwrightvn.com/');
-  }
-
-  async addProduct(productId: number, times: number = 1) {
+  async addProduct(productId: number, times: number ) {
     const button = this.getProductButton(productId);
-    for (let i = 0; i < times; i++) {
-      await button.click();
-    }
+    await button.click({clickCount: times});
+  }
+  getProductNameInCart(id: number): Locator {
+    return this.page.locator(`//td[text()="Product ${id}"]`);
+  }
+
+  getProductQtyInCart(id: number): Locator {
+    return this.page.locator(`//td[text()="Product ${id}"]/following-sibling::td[2]`);
+  }
+
+  getProductPriceInCart(id: number): Locator {
+    return this.page.locator(`//td[text()="Product ${id}"]/following-sibling::td[1]`);
+  }
+
+  getProductTotalInCart(id: number): Locator {
+    return this.page.locator(`//td[text()="Product ${id}"]/following-sibling::td[3]`);
+  }
+
+  // Getter cho price phía trên
+  getProductPriceAbove(id: number): Locator {
+    return this.page.locator(`//button[@data-product-id="${id}"]/preceding-sibling::div[@class="product-price"]`);
   }
 }

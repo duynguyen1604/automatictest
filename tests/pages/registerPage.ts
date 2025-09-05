@@ -1,110 +1,107 @@
-// registerPage.ts
 import { Locator, Page } from '@playwright/test';
 import { BasePage } from './basePage';
 
 export class RegisterPage extends BasePage {
-  readonly username: Locator;
-  readonly email: Locator;
-  readonly male: Locator;
-  readonly female: Locator;
-  readonly reading: Locator;
-  readonly travel: Locator;
-  readonly cooking: Locator;
-  readonly interests: Locator;
-  readonly country: Locator;
-  readonly dob: Locator;
-  readonly profile: Locator;
-  readonly bio: Locator;
-  readonly rating: Locator;
-  readonly favcolor: Locator;
-  readonly newsletter: Locator;
-  readonly toggleOption: Locator;
-  readonly starRating: Locator;
-  readonly starRatingValue: Locator;
-  readonly submitButton: Locator;
+  readonly locatorUsername: Locator;
+  readonly locatorEmail: Locator;
+  readonly locatorMale: Locator;
+  readonly locatorFemale: Locator;
+  readonly locatorReading: Locator;
+  readonly locatorTravel: Locator;
+  readonly locatorCooking: Locator;
+  readonly locatorInterests: Locator;
+  readonly locatorCountry: Locator;
+  readonly locatorDob: Locator;
+  readonly locatorProfile: Locator;
+  readonly locatorBio: Locator;
+  readonly locatorRating: Locator;
+  readonly locatorFavcolor: Locator;
+  readonly locatorNewsletter: Locator;
+  readonly locatorToggleOption: Locator;
+  readonly locatorStarRating: Locator;
+  readonly locatorStarRatingValue: Locator;
+  readonly locatorSubmitButton: Locator;
 
   constructor(page: Page) {
     super(page);
-    this.username = page.locator('//input[@name="username"]');
-    this.email = page.locator('//input[@type="email"]');
-    this.male = page.locator('//*[@id="male"]');
-    this.female = page.locator('//*[@id="female"]');
-    this.reading = page.locator('//input[@id="reading"]');
-    this.travel = page.locator('//input[@id="traveling"]');
-    this.cooking = page.locator('//input[@id="cooking"]');
-    this.interests = page.locator('//select[@id="interests"]');
-    this.country = page.locator('//select[@id="country"]');
-    this.dob = page.locator('//*[@id="dob"]');
-    this.profile = page.locator('#profile');
-    this.bio = page.locator('//*[@id="bio"]');
-    this.rating = page.locator('//*[@id="rating"]');
-    this.favcolor = page.locator('//*[@id="favcolor"]');
-    this.newsletter = page.locator('//*[@id="newsletter"]');
-    this.toggleOption = page.locator('//*[@id="registrationForm"]/div[13]/label[2]');
-    this.starRating = page.locator('//*[@id="starRating"]');
-    this.starRatingValue = page.locator('//*[@id="starRatingValue"]');
-    this.submitButton = page.locator('button[type="submit"]');
+    this.locatorUsername = page.locator('//input[@name="username"]');
+    this.locatorEmail = page.locator('//input[@type="email"]');
+    this.locatorMale = page.locator('//*[@id="male"]');
+    this.locatorFemale = page.locator('//*[@id="female"]');
+    this.locatorReading = page.locator('//input[@id="reading"]');
+    this.locatorTravel = page.locator('//input[@id="traveling"]');
+    this.locatorCooking = page.locator('//input[@id="cooking"]');
+    this.locatorInterests = page.locator('//select[@id="interests"]');
+    this.locatorCountry = page.locator('//select[@id="country"]');
+    this.locatorDob = page.locator('//*[@id="dob"]');
+    this.locatorProfile = page.locator('#profile');
+    this.locatorBio = page.locator('//*[@id="bio"]');
+    this.locatorRating = page.locator('//*[@id="rating"]');
+    this.locatorFavcolor = page.locator('//*[@id="favcolor"]');
+    this.locatorNewsletter = page.locator('//*[@id="newsletter"]');
+    this.locatorToggleOption = page.locator('//*[@id="registrationForm"]/div[13]/label[2]');
+    this.locatorStarRating = page.locator('//*[@id="starRating"]');
+    this.locatorStarRatingValue = page.locator('//*[@id="starRatingValue"]');
+    this.locatorSubmitButton = page.locator('button[type="submit"]');
   }
 
   async goto() {
-    const basePage = new BasePage(this.page);
-    await basePage.goto('https://material.playwrightvn.com/');
-    await this.page.getByText('Bài học 1: Register Page').click();
+    await super.goto('Bài học 1: Register Page');
   }
 
   async fillInfo(username: string, email: string, gender: 'male' | 'female', hobbies: string[] = []) {
-    await this.username.fill(username);
-    await this.email.fill(email);
+    await this.locatorUsername.fill(username);
+    await this.locatorEmail.fill(email);
 
     if (gender === 'male') {
-      await this.male.check();
+      await this.locatorMale.check();
     } else {
-      await this.female.check();
+      await this.locatorFemale.check();
     }
 
     if (hobbies.includes('reading')) {
-      await this.reading.check();
+      await this.locatorReading.check();
     }
     if (hobbies.includes('travel')) {
-      await this.travel.check();
+      await this.locatorTravel.check();
     }
     if (hobbies.includes('cooking')) {
-      await this.cooking.check();
+      await this.locatorCooking.check();
     }
   }
 
   async selectOptions(interest: string, country: string) {
-    await this.interests.selectOption(interest);
-    await this.country.selectOption(country);
+    await this.locatorInterests.selectOption(interest);
+    await this.locatorCountry.selectOption(country);
   }
 
   async setDobAndAvatar(dob: string, filePath: string) {
-    await this.dob.fill(dob);
-    await this.profile.setInputFiles(filePath);
+    await this.locatorDob.fill(dob);
+    await this.locatorProfile.setInputFiles(filePath);
   }
 
   async fillUserProfile(bio: string, rating: string, color: string) {
-    await this.bio.fill(bio);
-    await this.rating.fill(rating);
-    await this.favcolor.fill(color);
+    await this.locatorBio.fill(bio);
+    await this.locatorRating.fill(rating);
+    await this.locatorFavcolor.fill(color);
   }
 
   async setFeatures(enableNewsletter: boolean, enableToggle: boolean) {
     if (enableNewsletter) {
-      await this.newsletter.check();
+      await this.locatorNewsletter.check();
     } else {
-      await this.newsletter.uncheck();
+      await this.locatorNewsletter.uncheck();
     }
 
     if (enableToggle) {
-      await this.toggleOption.check();
+      await this.locatorToggleOption.check();
     } else {
-      await this.toggleOption.uncheck();
+      await this.locatorToggleOption.uncheck();
     }
   }
 
   async changeRating(newRating: number) {
-    const box = await this.starRating.boundingBox();
+    const box = await this.locatorStarRating.boundingBox();
     if (!box) throw new Error('Không tìm thấy boundingBox');
 
     const clickX = box.x + (box.width * newRating) / 5;
@@ -112,12 +109,12 @@ export class RegisterPage extends BasePage {
 
     await this.page.mouse.click(clickX, clickY);
 
-    await this.starRatingValue.evaluate((a, rating) => {
+    await this.locatorStarRatingValue.evaluate((a, rating) => {
       a.textContent = rating.toString();
     }, newRating);
   }
 
   async submitForm() {
-    await this.submitButton.click();
+    await this.locatorSubmitButton.click();
   }
 }

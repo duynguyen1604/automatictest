@@ -8,7 +8,11 @@ export class BasePage {
     this.page = page;
   }
 
-  async goto(url: string) {
-    await this.page.goto(url);
+  async goto(pageName?: string) {
+    await this.page.goto('https://material.playwrightvn.com/');
+
+    if (pageName) {
+      await this.page.getByText(pageName).click();
+    }
   }
 }

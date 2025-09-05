@@ -4,53 +4,95 @@ import { RegisterPage } from '../pages/registerPage';
 test.describe('Bài học 1: Register Page', () => {
   let registerPage: RegisterPage;
 
+  const userData = {
+    username: 'duy',
+    email: 'duy@gmail.com',
+    gender: 'male' as const,
+    hobbies: ['reading', 'cooking'],
+    interest: 'Science',
+    country: 'United States',
+    dob: '2004-04-04',
+    avatar: 'tests/files/avatar-27.jpeg',
+    bio: 'Xin chào, mình là Duy.',
+    rating: '5',
+    favcolor: '#0097fc',
+    features: { newsletter: true, toggle: false },
+    ratingChange: 2.9
+  };
+
   test.beforeEach(async ({ page }) => {
     registerPage = new RegisterPage(page);
-    
     await registerPage.goto();
   });
 
-
-  test('Điền form đăng ký', async () => {
+  test('Điền form đăng ký', async ({ page }) => {
     await test.step('Điền thông tin cơ bản', async () => {
-      await registerPage.fillInfo('duy', 'duy@gmail.com', 'male', ['reading', 'cooking']);
-      await expect(registerPage.username).toHaveValue('duy');
-      await expect(registerPage.email).toHaveValue('duy@gmail.com');
-      await expect(registerPage.male).toBeChecked();
-      await expect(registerPage.reading).toBeChecked();
-      await expect(registerPage.cooking).toBeChecked();
+      await registerPage.fillInfo(userData.username, userData.email, userData.gender, userData.hobbies);
+      await expect(registerPage.locatorUsername).toHaveValue(userData.username);
+      await expect(registerPage.locatorEmail).toHaveValue(userData.email);
+      await expect(registerPage.locatorMale).toBeChecked();
+      await expect(registerPage.locatorReading).toBeChecked();
+      await expect(registerPage.locatorCooking).toBeChecked();
     });
+
     await test.step('Chọn sở thích và quốc gia', async () => {
-      await registerPage.selectOptions('Science', 'United States');
-      await expect(registerPage.interests).toHaveValue('science');
-      await expect(registerPage.country).toHaveValue('usa');
+      await registerPage.selectOptions(userData.interest, userData.country);
+      await expect(registerPage.locatorInterests).toHaveValue(userData.interest.toLowerCase());
+      await expect(registerPage.locatorCountry).toHaveValue('usa');
     });
+
     await test.step('Ngày sinh và upload avatar', async () => {
-      await registerPage.setDobAndAvatar('2004-04-04', 'tests/files/avatar-27.jpeg');
-
-      await expect(registerPage.dob).toHaveValue('2004-04-04');
-      await expect(registerPage.profile).toHaveValue(/avatar-27\.jpeg$/);
+      await registerPage.setDobAndAvatar(userData.dob, userData.avatar);
+      await expect(registerPage.locatorDob).toHaveValue(userData.dob);
+      await expect(registerPage.locatorProfile).toHaveValue(
+        new RegExp(`${userData.avatar.split('/').pop()}$`)
+      );
     });
-    await test.step('Điền bio, rating, màu yêu thích', async () => {
-      await registerPage.fillUserProfile('Xin chào, mình là Duy.', '5', '#0097fc');
 
-      await expect(registerPage.bio).toHaveValue('Xin chào, mình là Duy.');
-      await expect(registerPage.rating).toHaveValue('5');
-      await expect(registerPage.favcolor).toHaveValue('#0097fc');
+    await test.step('Điền bio, rating, màu yêu thích', async () => {
+      await registerPage.fillUserProfile(
+        userData.bio,
+        userData.rating,
+        userData.favcolor
+      );
+      await expect(registerPage.locatorBio).toHaveValue(userData.bio);
+      await expect(registerPage.locatorRating).toHaveValue(userData.rating);
+      await expect(registerPage.locatorFavcolor).toHaveValue(userData.favcolor);
     });
 
     await test.step('Check newsletter & kích hoạt tính năng', async () => {
-      await registerPage.setFeatures(true, false);
-
-      await expect(registerPage.newsletter).toBeChecked;
-      await expect(registerPage.toggleOption).not.toBeChecked;
+      await registerPage.setFeatures(
+        userData.features.newsletter,
+        userData.features.toggle
+      );
+      await expect(registerPage.locatorNewsletter).toBeChecked();
+      await expect(registerPage.locatorToggleOption).not.toBeChecked();
     });
-  
-    await test.step('Thay đổi rating bằng evaluate', async () => {
-      await registerPage.changeRating(2.9);
-      await expect(registerPage.starRatingValue).toHaveText('2.9');
-  });
 
-    await registerPage.submitForm();
+    await test.step('Thay đổi rating bằng evaluate', async () => {
+      await registerPage.changeRating(userData.ratingChange);
+      await expect(registerPage.locatorStarRatingValue).toHaveText(
+        userData.ratingChange.toString()
+      );
+    });
+
+    await test.step('Nhấn nút submit form', async () => {
+      await registerPage.submitForm();
+    });
+
+    await test.step('Verify dữ liệu bảng dưới', async () => {
+      const infoCell = page.locator('//td[contains(text(), "Gender:")]');
+
+      await expect(infoCell).toContainText(`Gender: ${userData.gender}`);
+      await expect(infoCell).toContainText(`Hobbies: ${userData.hobbies.join(', ')}`);
+      await expect(infoCell).toContainText(`Country: usa`);
+      await expect(infoCell).toContainText(`Date of Birth: ${userData.dob}`);
+      await expect(infoCell).toContainText(`Biography: ${userData.bio}`);
+      await expect(infoCell).toContainText(`Rating: ${userData.rating}`);
+      await expect(infoCell).toContainText(`Favorite Color: ${userData.favcolor}`);
+      await expect(infoCell).toContainText(`Newsletter: ${userData.features.newsletter ? 'Yes' : 'No'}`);
+      await expect(infoCell).toContainText(`Enable Feature: ${userData.features.toggle ? 'Yes' : 'No'}`);
+      await expect(infoCell).toContainText(`Star Rating: ${userData.ratingChange}`);
+    });
   });
 });
