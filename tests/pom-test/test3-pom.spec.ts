@@ -26,11 +26,12 @@ test.describe('Bài học 3: Todo page', () => {
     });
 
     await test.step('Verify còn lại các task chẵn', async () => {
-      for (let i = 2; i <= 100; i += 2) {
-        await expect(todoPage.getTask(`${i}`)).toBeVisible();
-      }
-      for (let i = 1; i <= 100; i += 2) {
-        await expect(todoPage.getTask(`${i}`)).toHaveCount(0);
+      for (let i = 1; i <= 100; i++) {
+        if (i % 2 === 0) {
+          await expect(todoPage.getTask(`${i}`)).toBeVisible();
+        } else {
+          await expect(todoPage.getTask(`${i}`)).toHaveCount(0);
+        }
       }
     });
   });

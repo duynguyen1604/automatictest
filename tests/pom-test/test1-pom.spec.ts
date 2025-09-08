@@ -81,8 +81,7 @@ test.describe('Bài học 1: Register Page', () => {
     });
 
     await test.step('Verify dữ liệu bảng dưới', async () => {
-      const infoCell = page.locator('//td[contains(text(), "Gender:")]');
-
+       const infoCell = registerPage.infoCell;
       await expect(infoCell).toContainText(`Gender: ${userData.gender}`);
       await expect(infoCell).toContainText(`Hobbies: ${userData.hobbies.join(', ')}`);
       await expect(infoCell).toContainText(`Country: usa`);

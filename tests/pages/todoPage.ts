@@ -12,7 +12,9 @@ export class TodoPage extends BasePage {
     this.locatorAddButton = page.locator('#add-task');
     this.locatorTaskItems = page.locator('//li');
   }
-
+  getTask(name: string): Locator {
+    return this.page.locator(`//li[.//span[text()="${name}"]]`);
+  }
   async goto() {
     await super.goto('Bài học 3: Todo page');
   }
@@ -26,7 +28,5 @@ export class TodoPage extends BasePage {
     const deleteButton = this.page.locator(`//li[.//span[text()="${name}"]]//button[text()="Delete"]`);
     await deleteButton.click();
   }
-  getTask(name: string): Locator {
-    return this.page.locator(`//li[.//span[text()="${name}"]]`);
-  }
+
 }

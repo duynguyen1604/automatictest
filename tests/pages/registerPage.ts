@@ -21,6 +21,7 @@ export class RegisterPage extends BasePage {
   readonly locatorStarRating: Locator;
   readonly locatorStarRatingValue: Locator;
   readonly locatorSubmitButton: Locator;
+  readonly infoCell: Locator;
 
   constructor(page: Page) {
     super(page);
@@ -43,6 +44,7 @@ export class RegisterPage extends BasePage {
     this.locatorStarRating = page.locator('//*[@id="starRating"]');
     this.locatorStarRatingValue = page.locator('//*[@id="starRatingValue"]');
     this.locatorSubmitButton = page.locator('button[type="submit"]');
+    this.infoCell = page.locator('//td[contains(text(), "Gender:")]');
   }
 
   async goto() {
