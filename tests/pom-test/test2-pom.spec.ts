@@ -31,9 +31,9 @@ test.describe('Bài học 2: Product Page', () => {
         await expect(nameLocator).toHaveText(name);
         await expect(qtyLocator).toHaveText(`${qty}`);
 
-        const above = Number((await priceAbove.textContent())?.replace('$', '') || 0);
-        const inCart = Number((await priceInCart.textContent())?.replace('$', '') || 0);
-        const total = Number((await totalLocator.textContent())?.replace('$', '') || 0);
+        const above = Number((await priceAbove.textContent())?.replace('$', '') );
+        const inCart = Number((await priceInCart.textContent())?.replace('$', '') );
+        const total = Number((await totalLocator.textContent())?.replace('$', '') );
 
         expect(above).toBe(inCart);
         expect(total).toBe(inCart * qty);
